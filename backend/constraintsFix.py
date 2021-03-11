@@ -9,19 +9,31 @@
 import math
 import random
 
-maxiters = 10
+maxiters = 800
 initPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
 
-class Counter(object):
-    def __init__(self, fn):
-        self.fn = fn
-        self.iters = 0
-    def __call__(self, *args):
-        self.iters += 1
-        if self.iters > maxiters:
-            print("TOO MANY RECURSIONS")
-            return initPars
-        return self.fn(*args)
+recur03 = 0
+recur32 = 0
+recur21 = 0
+
+#class Counter(object):
+    #def __init__(self, fn):
+        #self.fn = fn
+        #self.iters = 0
+    #def __call__(self, *args):
+        #self.iters += 1
+        #print(self.iters)
+        #if self.iters > maxiters:
+            #print("TOO MANY RECURSIONS")
+            #parameterMap = initPars
+        #return self.fn(*args)
+    #def resetIters(self):
+        #self.iters = 0
+def reset_global_vars():
+    global recur03, recur32, recur21
+    recur03 = 0
+    recur32 = 0
+    recur21 = 0
 
 #maps negative constraints to 0
 def constraint_postive(parameterMap, mapField):
@@ -139,10 +151,16 @@ def constraint0R0(parameterMap):
     if parameterMap["r0"] < 0.2:
         parameterMap["r0"] = 0.2
 
-
+#@Counter
 # contrains the overlap between the 4th and 3rd row
 def constraintsPSR03(parameterMap):
-    print("PSR03", parameterMap)
+    #print("PSR03", parameterMap)
+    #if parameterMap == initPars:
+        #print("FAILED TEST")
+        
+    global recur03
+    recur03 += 1
+    
     if "s3" in parameterMap.keys():
         s3 = -parameterMap["s3"]
     else:
@@ -174,17 +192,29 @@ def constraintsPSR03(parameterMap):
             r = random.random()
         else:
             r = 0.6
-        if r > 0.5:
-            parameterMap['p3'] = 0.9*parameterMap['p3']
-            parameterMap['s3'] = 0.9*parameterMap['s3']
-            constraintsPSR03(parameterMap)
+            
+        if recur03 <= maxiters:
+            if r > 0.5:
+                parameterMap['p3'] = 0.9*parameterMap['p3']
+                parameterMap['s3'] = 0.9*parameterMap['s3']
+                constraintsPSR03(parameterMap)
+            else:
+                parameterMap['r3'] = 0.9*parameterMap['r3']
+                constraintsPSR03(parameterMap)
         else:
-            parameterMap['r3'] = 0.9*parameterMap['r3']
-            constraintsPSR03(parameterMap)
-
+            print("TOO MANY RECURSIONS")
+            parameterMap = {param: value for param,value in initPars.items()}
+             
+#@Counter
 # contrains the overlap between the 3rd and 2nd row
 def constraintsPSR32(parameterMap):
-    print("PSR32", parameterMap)
+    #print("PSR32", parameterMap)
+    #if parameterMap == initPars:
+        #print("FAILED TEST")
+        
+    global recur32
+    recur32 += 1
+    
     if "s3" in parameterMap.keys():
         s3 = -parameterMap["s3"]
     else:
@@ -214,36 +244,46 @@ def constraintsPSR32(parameterMap):
 
     
     if hole_distance_3_2 - 0.1 < (r3 + r2 ): # if holes overlap
-        print("ROWS 2 AND 3 OVERLAP")
-        parameterMap = {param: 0 for param in parameterMap}        
-            ## randomly rescale hole radius or shift (unless hole radius is too small)
-            #if r2 > 0.23:
-                #r = random.random()
-            #else:
-                #r = 0.6
+        #print("ROWS 2 AND 3 OVERLAP")
+        #parameterMap = {param: 0 for param in parameterMap}        
+        # randomly rescale hole radius or shift (unless hole radius is too small)
+        if r2 > 0.23:
+            r = random.random()
+        else:
+            r = 0.6
 
-            #if r > 0.5:
-                #if p2 != 0:
-                    #if p2 > p3:
-                        #parameterMap["p2"] = 0.95*parameterMap["p2"]
-                    #else:
-                        #parameterMap["p2"] = 1.05*parameterMap["p2"]
+        if recur32 <= maxiters:
+            if r > 0.5:
+                if p2 != 0:
+                    if p2 > p3:
+                        parameterMap["p2"] = 0.95*parameterMap["p2"]
+                    else:
+                        parameterMap["p2"] = 1.05*parameterMap["p2"]
 
-                #if s2 != 0:
-                    #if s2 > 0:
-                        #parameterMap['s2'] = 0.9*parameterMap['s2']
-                    #else:
-                        #parameterMap['s2'] = 1.1*parameterMap['s2']
+                if s2 != 0:
+                    if s2 > 0:
+                        parameterMap['s2'] = 0.9*parameterMap['s2']
+                    else:
+                        parameterMap['s2'] = 1.1*parameterMap['s2']
 
-                #constraintsPSR32(parameterMap)
-            #else:
-                #parameterMap['r2'] = 0.9*parameterMap['r2']
-                #constraintsPSR32(parameterMap)
+                constraintsPSR32(parameterMap)
+            else:
+                parameterMap['r2'] = 0.9*parameterMap['r2']
+                constraintsPSR32(parameterMap)
+        else: 
+            print("TOO MANY RECURSIONS")
+            parameterMap = {param: value for param,value in initPars.items()}
 
-
+#@Counter
 # contrains the overlap between the 2nd and 1st row
 def constraintsPSR21(parameterMap):
-    print("PSR21", parameterMap)
+    #print("PSR21", parameterMap)
+    #if parameterMap == initPars:
+        #print("FAILED TEST")
+    
+    global recur21
+    recur21 += 1
+    
     if "s2" in parameterMap.keys():
         s2 = -parameterMap["s2"]
     else:
@@ -270,39 +310,40 @@ def constraintsPSR21(parameterMap):
         r1 = 0
 
     hole_distance_3_2 = math.sqrt( ((1/math.sqrt(2)) + s2 - s1)**2 + ((1/math.sqrt(2)) - math.fabs(p2 - p1))**2)
-
-    iterations = 0
     
     if hole_distance_3_2 - 0.1 < (r2 + r1 ): # if holes overlap
-        print("ROWS 1 AND 2 OVERLAP")
-        parameterMap = {param: 0 for param in parameterMap}
+        #print("ROWS 1 AND 2 OVERLAP")
+        #parameterMap = {param: 0 for param in parameterMap}
         
-            ## randomly rescale hole radius or shift (unless hole radius is too small)
-            #if r1 > 0.23:
-                #r = random.random()
-            #else:
-                #r = 0.6
+        # randomly rescale hole radius or shift (unless hole radius is too small)
+        if r1 > 0.23:
+            r = random.random()
+        else:
+            r = 0.6
 
-            #if r > 0.5:
-                #if p1 != 0:
-                    #if p1 > p2:
-                        #parameterMap["p1"] = 0.95*parameterMap["p1"]
-                    #else:
-                        #parameterMap["p1"] = 1.05*parameterMap["p1"]
+        if recur21 <= maxiters:
+            if r > 0.5:
+                if p1 != 0:
+                    if p1 > p2:
+                        parameterMap["p1"] = 0.95*parameterMap["p1"]
+                    else:
+                        parameterMap["p1"] = 1.05*parameterMap["p1"]
 
-                #if s2 != 0:
-                    #if s2 > 0:
-                        #parameterMap['s1'] = 0.9*parameterMap['s1']
-                    #else:
-                        #parameterMap['s1'] = 1.1*parameterMap['s1']
+                if s2 != 0:
+                    if s2 > 0:
+                        parameterMap['s1'] = 0.9*parameterMap['s1']
+                    else:
+                        parameterMap['s1'] = 1.1*parameterMap['s1']
 
-                #constraintsPSR32(parameterMap)
+                constraintsPSR32(parameterMap)
 
-            #else:
-                #if r1 != 0:
-                    #parameterMap['r1'] = 0.9*parameterMap['r1']
-                #constraintsPSR32(parameterMap)
-                
+            else:
+                if r1 != 0:
+                    parameterMap['r1'] = 0.9*parameterMap['r1']
+                constraintsPSR32(parameterMap)
+        else:
+            print("TOO MANY RECURSIONS")
+            parameterMap = {param: value for param,value in initPars.items()}
             
 
 # ensures the structural constraints are satisfied for a Line Defect waveguide
@@ -336,9 +377,9 @@ def latticeConstraintsLD(parameterMap):
     #constraint0S3 = Counter(constraint0S3)
     
     #constraintRounding = Counter(constraintRounding)
-    constraintPSR03 = Counter(constraintPSR03)
-    constraintPSR32 = Counter(constraintPSR32)
-    constraintPSR21 = Counter(constraintPSR21)
+    #constraintPSR03 = Counter(constraintPSR03)
+    #constraintPSR32 = Counter(constraintPSR32)
+    #constraintPSR21 = Counter(constraintPSR21)
 
     # print parameterMap
     constraintAR1(parameterMap)
@@ -374,6 +415,8 @@ def latticeConstraintsLD(parameterMap):
     constraintsPSR03(parameterMap)
     constraintsPSR32(parameterMap)
     constraintsPSR21(parameterMap)
+    
+    reset_global_vars()
 
 # applies each constraint function in 'constraints' to the hashMapVector
 # example hashMapVector
