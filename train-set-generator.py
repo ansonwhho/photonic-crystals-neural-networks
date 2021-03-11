@@ -9,14 +9,14 @@ import pandas as pd
 import sys
 
 # constraints fixer often takes many recursion steps to work
-sys.setrecursionlimit(1000)
+sys.setrecursionlimit(10**4)
 
 def main():
     # paths to files
     mpb = "/usr/bin/mpb"
     inputFile = "/home/nanophotgrp/Desktop/PCO/WaveguideCTL/W1_2D_v04.ctl.txt"
     outputLog = "/home/nanophotgrp/Desktop/PCO/test-run.out"
-    outputCSV = "/home/nanophotgrp/Desktop/PCO/2021-03-10_train-set-6.csv"
+    outputCSV = "/home/nanophotgrp/Desktop/PCO/2021-03-11_train-set-1.csv"
 
     # initialise parameter map
     # pars = {'r0': 0.1, 'r1': 0.2, 'r2': 0.2845, 'r3': 0.290696, 's3': -0.004733, 's2': -0.000407, 's1': -0.048862, 'p1':0.3, 'p2':0.3, 'p3':0.3}
@@ -24,7 +24,7 @@ def main():
     constraintFunctions = [constraintsFix.latticeConstraintsLD]
 
     # number of runs
-    runs = 10
+    runs = 100
     outputData = []
 
     # create datasets
@@ -48,6 +48,12 @@ def main():
         
         constrainPars = constraintsFix.fix(randomPars, constraintFunctions)
         #print("AFTER", constrainPars) # debug
+        #constraintsFix.constraintPSR03().resetIters()
+        #constraintsFix.constraintPSR32().resetIters()
+        #constraintsFix.constraintPSR21().resetIters()
+        
+        #for func in constraintFunctions:
+            #func.resetIters()
         
         #if constrainPars == initPars
         
