@@ -277,10 +277,7 @@ def constraintsPSR32(parameterMap):
 #@Counter
 # contrains the overlap between the 2nd and 1st row
 def constraintsPSR21(parameterMap):
-    #print("PSR21", parameterMap)
-    #if parameterMap == initPars:
-        #print("FAILED TEST")
-    
+
     global recur21
     recur21 += 1
     
@@ -309,9 +306,9 @@ def constraintsPSR21(parameterMap):
     else:
         r1 = 0
 
-    hole_distance_3_2 = math.sqrt( ((1/math.sqrt(2)) + s2 - s1)**2 + ((1/math.sqrt(2)) - math.fabs(p2 - p1))**2)
+    hole_distance_2_1 = math.sqrt( ((1/math.sqrt(2)) + s2 - s1)**2 + ((1/math.sqrt(2)) - math.fabs(p2 - p1))**2)
     
-    if hole_distance_3_2 - 0.1 < (r2 + r1 ): # if holes overlap
+    if hole_distance_2_1 - 0.1 < (r2 + r1 ): # if holes overlap
         #print("ROWS 1 AND 2 OVERLAP")
         #parameterMap = {param: 0 for param in parameterMap}
         
@@ -335,12 +332,12 @@ def constraintsPSR21(parameterMap):
                     else:
                         parameterMap['s1'] = 1.1*parameterMap['s1']
 
-                constraintsPSR32(parameterMap)
+                constraintsPSR21(parameterMap)
 
             else:
                 if r1 != 0:
                     parameterMap['r1'] = 0.9*parameterMap['r1']
-                constraintsPSR32(parameterMap)
+                constraintsPSR21(parameterMap)
         else:
             print("TOO MANY RECURSIONS")
             parameterMap = {param: value for param,value in initPars.items()}
