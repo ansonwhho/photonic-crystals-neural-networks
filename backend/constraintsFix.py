@@ -16,19 +16,6 @@ recur03 = 0
 recur32 = 0
 recur21 = 0
 
-#class Counter(object):
-    #def __init__(self, fn):
-        #self.fn = fn
-        #self.iters = 0
-    #def __call__(self, *args):
-        #self.iters += 1
-        #print(self.iters)
-        #if self.iters > maxiters:
-            #print("TOO MANY RECURSIONS")
-            #parameterMap = initPars
-        #return self.fn(*args)
-    #def resetIters(self):
-        #self.iters = 0
 def reset_global_vars():
     global recur03, recur32, recur21
     recur03 = 0
@@ -151,7 +138,6 @@ def constraint0R0(parameterMap):
     if parameterMap["r0"] < 0.2:
         parameterMap["r0"] = 0.2
 
-#@Counter
 # contrains the overlap between the 4th and 3rd row
 def constraintsPSR03(parameterMap):
     #print("PSR03", parameterMap)
@@ -205,7 +191,6 @@ def constraintsPSR03(parameterMap):
             print("TOO MANY RECURSIONS")
             parameterMap = {param: value for param,value in initPars.items()}
              
-#@Counter
 # contrains the overlap between the 3rd and 2nd row
 def constraintsPSR32(parameterMap):
     #print("PSR32", parameterMap)
@@ -274,7 +259,6 @@ def constraintsPSR32(parameterMap):
             print("TOO MANY RECURSIONS")
             parameterMap = {param: value for param,value in initPars.items()}
 
-#@Counter
 # contrains the overlap between the 2nd and 1st row
 def constraintsPSR21(parameterMap):
 
@@ -345,38 +329,6 @@ def constraintsPSR21(parameterMap):
 
 # ensures the structural constraints are satisfied for a Line Defect waveguide
 def latticeConstraintsLD(parameterMap):
-
-    #constraintAR1 = Counter(constraintAR1)
-    #constraintAR2 = Counter(constraintAR2)
-    #constraintAR3 = Counter(constraintAR3)
-    
-    #constraint0R1 = Counter(constraint0R1)
-    #constraint0R2 = Counter(constraint0R2)
-    #constraint0R3 = Counter(constraint0R3)
-    
-    #constraint0R0 = Counter(constraint0R0)
-    #constraintAR0 = Counter(constraintAR0)
-
-    #constraintAP1 = Counter(constraintAP1)
-    #constraintAP2 = Counter(constraintAP2)
-    #constraintAP3 = Counter(constraintAP3)
-    
-    #constraint0P1 = Counter(constraint0P1)
-    #constraint0P2 = Counter(constraint0P2)
-    #constraint0P3 = Counter(constraint0P3)
-    
-    #constraintAS1 = Counter(constraintAS1)
-    #constraintAS2 = Counter(constraintAS2)
-    #constraintAS3 = Counter(constraintAS3)
-
-    #constraint0S1 = Counter(constraint0S1)
-    #constraint0S2 = Counter(constraint0S2)
-    #constraint0S3 = Counter(constraint0S3)
-    
-    #constraintRounding = Counter(constraintRounding)
-    #constraintPSR03 = Counter(constraintPSR03)
-    #constraintPSR32 = Counter(constraintPSR32)
-    #constraintPSR21 = Counter(constraintPSR21)
 
     # print parameterMap
     constraintAR1(parameterMap)

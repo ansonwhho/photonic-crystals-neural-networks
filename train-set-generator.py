@@ -16,15 +16,14 @@ def main():
     mpb = "/usr/bin/mpb"
     inputFile = "/home/nanophotgrp/Desktop/PCO/WaveguideCTL/W1_2D_v04.ctl.txt"
     outputLog = "/home/nanophotgrp/Desktop/PCO/test-run.out"
-    outputCSV = "/home/nanophotgrp/Desktop/PCO/2021-03-11_train-set-1.csv"
+    outputCSV = "/home/nanophotgrp/Desktop/PCO/2021-03-24_p3_set-1.csv"
 
     # initialise parameter map
-    # pars = {'r0': 0.1, 'r1': 0.2, 'r2': 0.2845, 'r3': 0.290696, 's3': -0.004733, 's2': -0.000407, 's1': -0.048862, 'p1':0.3, 'p2':0.3, 'p3':0.3}
     initPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
     constraintFunctions = [constraintsFix.latticeConstraintsLD]
 
     # number of runs
-    runs = 100
+    runs = 1000
     outputData = []
 
     # create datasets
@@ -34,28 +33,20 @@ def main():
         # randomise parameters with constraints
         # make copy of initPars
         randomPars = {param: value for param,value in initPars.items()}
-        randomPars['r0'] = uniform(0.2, 0.4)
-        randomPars['r1'] = uniform(0.2, 0.4)
-        randomPars['r2'] = uniform(0.2, 0.4)
-        randomPars['r3'] = uniform(0.2, 0.4)
-        randomPars['s1'] = uniform(-0.5, 0.5)
-        randomPars['s2'] = uniform(-0.5, 0.5)
-        randomPars['s3'] = uniform(-0.5, 0.5)
-        randomPars['p1'] = uniform(-0.5, 0.5)
-        randomPars['p2'] = uniform(-0.5, 0.5)
+        randomPars['r0'] = 0.2 #uniform(0.2, 0.4)
+        randomPars['r1'] = 0.2 #uniform(0.2, 0.4)
+        randomPars['r2'] = 0.2 #uniform(0.2, 0.4)
+        randomPars['r3'] = 0.2 # uniform(0.2, 0.4)
+        randomPars['s1'] = 0 # uniform(-0.5, 0.5)
+        randomPars['s2'] = 0 # uniform(-0.5, 0.5)
+        randomPars['s3'] = 0 # uniform(-0.5, 0.5)
+        randomPars['p1'] = 0 # uniform(-0.5, 0.5)
+        randomPars['p2'] = 0 # uniform(-0.5, 0.5)
         randomPars['p3'] = uniform(-0.5, 0.5)
         #print("BEFORE", randomPars) # debug
         
         constrainPars = constraintsFix.fix(randomPars, constraintFunctions)
         #print("AFTER", constrainPars) # debug
-        #constraintsFix.constraintPSR03().resetIters()
-        #constraintsFix.constraintPSR32().resetIters()
-        #constraintsFix.constraintPSR21().resetIters()
-        
-        #for func in constraintFunctions:
-            #func.resetIters()
-        
-        #if constrainPars == initPars
         
         # set up experiment
         experiment = W1Experiment(mpb, inputFile, outputLog)
@@ -68,7 +59,6 @@ def main():
 
         # run experiment and extract FOMs
         getFOMs = experiment.extractFunctionParams()
-        #print(foms) # debug
         
         # combine dictionaries
         outputDict = {**constrainPars, **getFOMs}
