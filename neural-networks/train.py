@@ -27,21 +27,35 @@ from tensorflow.keras import layers
 from sklearn.model_selection import train_test_split
 # from sklearn import preprocessing
 import matplotlib.pyplot as plt
+
+import preprocessing
 import architectures as arc
+import predict
 
 def normalizer(df):
 
 	# Min-max normalization
 
-	col_max_min = {} # Allows denormalisation
+	col_max_min = {} # For denormalisation
 
 	norm_df = df.copy()
+	df_len = df.shape[0]
 
 	for col in df.columns:
 		col_max = df[col].max()
 		col_min = df[col].min()
-		norm_df[col] = (df[col] - col_min) / (col_max - col_min)
+
+		# Min-max scaling
+		if col_max == col_min: # Check division by zero
+			if col_max == 0:
+				norm_df[col] = 0
+			else:
+				norm_df[col] = 1 / df_len
+		else: 
+			norm_df[col] = (df[col] - col_min) / (col_max - col_min)
+		
 		col_max_min[col] = (col_max, col_min)
+
 	
 	return norm_df, col_max_min
 
@@ -58,9 +72,7 @@ def denormalizer(norm_df, col_max_min):
 
 	return denorm_df
 
-def preprocessing(inputCSV, all_params, input_params, output_params):
-
-	dataFrame = pd.read_csv(inputCSV, names=all_params)
+def preprocessing(dataFrame, all_params, input_params, output_params):
 
 	# Remove data with invalid refractive index
 	# i.e. remove data when GBP auto set to zero
@@ -80,6 +92,13 @@ def preprocessing(inputCSV, all_params, input_params, output_params):
 
 	return out_dfs
 
+def visual_data(dataFrame):
+
+	# Visualises data for exploration
+
+	pd.plotting.scatter_matrix(dataFrame, diagonal='kde')
+	plt.show()
+
 def train_model(features, targets, epochs, split, learn_rate, loss):
 
 	# Trains model with specified hyperparameters
@@ -89,12 +108,14 @@ def train_model(features, targets, epochs, split, learn_rate, loss):
 
 	model = arc.seq_model(feature_dim, target_dim, learn_rate, loss)
 
-	history = model.fit(
-		norm_X_train, norm_y_train,
-		epochs=10,
-		verbose=1,
-		validation_split=0.1
-		)
+	# history = model.fit(
+	# 	features, targets,
+	# 	epochs=10,
+	# 	verbose=1,
+	# 	validation_split=0.1
+	# 	)
+
+	return model
 
 def save_model(model, date, ver, fileName):
 	fileName = "train_{}_v{}.h5".format(date, version)
@@ -108,47 +129,81 @@ def main():
 	"""
 
 	# Load data
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/nn-training-sets/combined-sets/2021-03-27_combined-set.csv"
+	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-03-29_combined-set.csv"
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
 	input_params = all_params[6:] # p1 onwards
-	output_params = all_params[:6]
-	# output_params = all_params[:1] # GBP only
+	# output_params = all_params[:6]
+	output_params = all_params[:1] # GBP only
 
-	dataFrames = preprocessing(inputCSV, all_params, input_params, output_params)
+	df = pd.read_csv(inputCSV, names=all_params)
+	# df_valid = df[df.GBP != 0.0000]
+	# visual_data(df_valid[input_params])
+
+	dataFrames = preprocessing(df, all_params, input_params, output_params)
+
+	# print(dataFrames)
 
 	norm_X_train, X_train_maxmin = dataFrames[0]
 	norm_y_train, y_train_maxmin = dataFrames[1]
 	norm_X_test, X_test_maxmin = dataFrames[2]
 	norm_y_test, y_test_maxmin = dataFrames[3]
 
+	# print(norm_X_train)
+
 	# Build model
-	learn_rate = 1e-5
+	learn_rate = 5e-6
 	loss = 'mse' # Mean squared error
-	epochs = 10
+	epochs = 50
 	val_split = 0.1
 
 	model = train_model(norm_X_train, norm_y_train, epochs, val_split, learn_rate, loss)
 
-	# norm_y_pred = pd.DataFrame(model.predict(norm_X_test), columns=output_params)
+	history = model.fit(
+		norm_X_train, norm_y_train,
+		epochs=epochs,
+		verbose=0,
+		validation_split=val_split
+		)
 
-	# # Compare predictions with actual
-	# diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
-	# # print(pd.DataFrame(diff))
-	# print("MEAN: ", np.mean(diff))
-	# print("STD: ", np.std(diff))
+	norm_y_pred = pd.DataFrame(model.predict(norm_X_test), columns=output_params)
 
-	# # Visualise training
-	# plot_title = 'Model accuracy'
-	# x_label = 'Epochs'
-	# y_label = 'Loss'
+	# Compare predictions with actual
+	diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
 
-	# plt.plot(model.history['loss'])
-	# plt.plot(model.history['val_loss'])
-	# plt.title(plot_title)
-	# plt.xlabel(x_label)
-	# plt.ylabel(y_label)
-	# plt.legend(['loss', 'val_loss'], loc = 'upper left')
-	# plt.show()
+	print("NORMALISED y PREDICTIONS")
+	print()
+	print(norm_y_pred)
+	print()
+	print("NORMALISED y ACTUAL")
+	print()
+	print(norm_y_test)
+	print()
+	print("DIFFERENCE")
+	print()
+	print(pd.DataFrame(diff))
+	print()
+	print("MODEL PERFORMANCE")
+	print("EPOCHS: ", epochs)
+	print("LEARNING RATE: ", learn_rate)
+	print("NO. OF LAYERS: ", 1)
+	print("NEURONS PER LAYER: ", 16)
+	print("ACTIVATION: ", "sigmoid")
+	print("MEAN: ", np.mean(diff))
+	print("STD: ", np.std(diff))
+
+	# Visualise training
+	plot_title = 'Model accuracy'
+	x_label = 'Epochs'
+	y_label = 'Loss'
+
+	plt.plot(history.history['loss'])
+	plt.plot(history.history['val_loss'])
+	plt.title(plot_title)
+	plt.xlabel(x_label)
+	plt.ylabel(y_label)
+	plt.legend(['loss', 'val_loss'], loc = 'upper left')
+	plt.show()
 
 	# date = 2021-03-28 # YYYY-MM-DD
 	# version = 1

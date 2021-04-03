@@ -18,6 +18,41 @@ import matplotlib.pyplot as plt
 # def plot():
 # 	plt.show()
 
+# def predict(model):
+# 	model.predict()
+
+# def eval_preds():
+
+# 	# Evaluates accuracy of predictions
+
+# 	norm_y_pred = pd.DataFrame(model.predict(norm_X_test), columns=output_params)
+
+# 	# Compare predictions with actual
+# 	diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
+
+# 	print("NORMALISED y PREDICTIONS")
+# 	print()
+# 	print(norm_y_pred)
+# 	print()
+# 	print("NORMALISED y ACTUAL")
+# 	print()
+# 	print(norm_y_test)
+# 	print()
+# 	print("DIFFERENCE")
+# 	print()
+# 	print(pd.DataFrame(diff))
+# 	print()
+# 	print("MODEL PERFORMANCE")
+# 	print("EPOCHS: ", epochs)
+# 	print("LEARNING RATE: ", learn_rate)
+# 	print("NO. OF LAYERS: ", 1)
+# 	print("NEURONS PER LAYER: ", 16)
+# 	print("ACTIVATION: ", "sigmoid")
+# 	print("MEAN: ", np.mean(diff))
+# 	print("STD: ", np.std(diff))
+
+# 	plt.show()
+
 def main(): 
 
 	"""

@@ -22,7 +22,8 @@ def seq_model(in_dim, out_dim, learn_rate, loss):
 	# and optimizer
 
 	model = keras.Sequential()
-	model.add(keras.layers.Dense(16, input_dim=in_dim, activation='sigmoid'))
+	model.add(keras.layers.Dense(64, input_dim=in_dim, activation='sigmoid'))
+	# model.add(keras.layers.Dense(16, activation='sigmoid'))
 	model.add(keras.layers.Dense(out_dim))
 
 	# SGD most stable
