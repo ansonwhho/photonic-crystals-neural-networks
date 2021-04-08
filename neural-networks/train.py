@@ -34,7 +34,11 @@ import predict
 
 def normalizer(df):
 
-	# Min-max normalization
+	"""
+	Min-max normalisation, manually written because
+	I want to be able to denormalise the outputs later
+	(see denormalizer method)
+	"""
 
 	col_max_min = {} # For denormalisation
 
@@ -61,8 +65,10 @@ def normalizer(df):
 
 def denormalizer(norm_df, col_max_min):
 
-	# Min-max normalization in reverse
-
+	"""
+	Reverses min-max normalisation to obtain
+	values in outputs in original scale
+	"""
 	denorm_df = norm_df.copy()
 	
 	for col in norm_df.columns: 
@@ -88,32 +94,27 @@ def preprocessing(dataFrame, all_params, input_params, output_params):
 	# different ranges, which would lead to uneven training
 	# by the network
 
+	# out_dfs = X_train, X_test, y_train, y_test
 	out_dfs = normalizer(X_train), normalizer(y_train), normalizer(X_test), normalizer(y_test)
 
 	return out_dfs
 
 def visual_data(dataFrame):
 
-	# Visualises data for exploration
-
+	# Verify the distribution of results
 	pd.plotting.scatter_matrix(dataFrame, diagonal='kde')
 	plt.show()
 
 def train_model(features, targets, epochs, split, learn_rate, loss):
 
-	# Trains model with specified hyperparameters
+	"""
+	Trains model with specified hyperparameters
+	"""
 
 	feature_dim = features.shape[1]
 	target_dim = targets.shape[1]
 
 	model = arc.seq_model(feature_dim, target_dim, learn_rate, loss)
-
-	# history = model.fit(
-	# 	features, targets,
-	# 	epochs=10,
-	# 	verbose=1,
-	# 	validation_split=0.1
-	# 	)
 
 	return model
 
@@ -130,11 +131,11 @@ def main():
 
 	# Load data
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-03-29_combined-set.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-07_combined-set.csv"
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
 	input_params = all_params[6:] # p1 onwards
 	# output_params = all_params[:6]
-	output_params = all_params[:1] # GBP only
+	output_params = [all_params[5]] # single output param
 
 	df = pd.read_csv(inputCSV, names=all_params)
 	# df_valid = df[df.GBP != 0.0000]
@@ -149,12 +150,17 @@ def main():
 	norm_X_test, X_test_maxmin = dataFrames[2]
 	norm_y_test, y_test_maxmin = dataFrames[3]
 
+	# norm_X_train, X_train_maxmin = dataFrames[0]
+	# norm_y_train = dataFrames[1]
+	# norm_X_test, X_test_maxmin = dataFrames[2]
+	# norm_y_test = dataFrames[3]	
+
 	# print(norm_X_train)
 
 	# Build model
-	learn_rate = 5e-6
-	loss = 'mse' # Mean squared error
-	epochs = 50
+	learn_rate = 5e-4
+	loss = 'mae' # Mean absolute error
+	epochs = 100
 	val_split = 0.1
 
 	model = train_model(norm_X_train, norm_y_train, epochs, val_split, learn_rate, loss)
@@ -170,6 +176,10 @@ def main():
 
 	# Compare predictions with actual
 	diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
+	percent = diff / norm_y_pred.to_numpy() * 100
+	percentDF = pd.DataFrame(percent)
+	diffDF = pd.DataFrame(diff)
+	print(percentDF)
 
 	print("NORMALISED y PREDICTIONS")
 	print()
@@ -193,16 +203,25 @@ def main():
 	print("STD: ", np.std(diff))
 
 	# Visualise training
-	plot_title = 'Model accuracy'
-	x_label = 'Epochs'
-	y_label = 'Loss'
+	plot_title = 'Percentage error for ng0'
+	x_label = 'Percentage error'
+	# y_label = 'Loss'
 
-	plt.plot(history.history['loss'])
-	plt.plot(history.history['val_loss'])
+	# plt.plot(history.history['loss'])
+	# plt.plot(history.history['val_loss'])
+	# plt.title(plot_title)
+	# plt.xlabel(x_label)
+	# plt.ylabel(y_label)
+	# plt.legend(['loss', 'val_loss'], loc = 'upper left')
+	# plt.show()
+
+	# plt.figure();
+	bins = [0, 1, 3, 10, 30, 50, 100, 300, 1000]
+	print(np.histogram(percentDF, bins=bins))
+	percentDF.plot.hist(bins=bins)
 	plt.title(plot_title)
+	plt.xscale('log')
 	plt.xlabel(x_label)
-	plt.ylabel(y_label)
-	plt.legend(['loss', 'val_loss'], loc = 'upper left')
 	plt.show()
 
 	# date = 2021-03-28 # YYYY-MM-DD

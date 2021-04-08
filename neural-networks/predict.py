@@ -10,48 +10,82 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
+from itertools import product
 
-# def accuracy():
-# 	score = 0
-# 	return score
+def prediction_set():
 
-# def plot():
-# 	plt.show()
+	"""
+	Generates data for prediction systematically
+	throughout the input parameter space
+	"""
 
-# def predict(model):
-# 	model.predict()
+	# initPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
+	
 
-# def eval_preds():
+	# round used to bypass floating point error
+	rRange = [round(x*0.1, 1) for x in range(1, 5+1, 1)] # radii from 0.1 to 0.5
+	sRange = [round(x*0.1, 1) for x in range(-5, 5+1, 5)]
+	pRange = [round(x*0.1, 1) for x in range(-5, 5+1, 5)]
 
-# 	# Evaluates accuracy of predictions
+	# Array for all inputs
+	inputArray = [rRange for i in range(4)] + [sRange for i in range(3)] + [pRange for i in range(3)]
 
-# 	norm_y_pred = pd.DataFrame(model.predict(norm_X_test), columns=output_params)
+	# print(inputPars)
 
-# 	# Compare predictions with actual
-# 	diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
+	outputData = []
 
-# 	print("NORMALISED y PREDICTIONS")
-# 	print()
-# 	print(norm_y_pred)
-# 	print()
-# 	print("NORMALISED y ACTUAL")
-# 	print()
-# 	print(norm_y_test)
-# 	print()
-# 	print("DIFFERENCE")
-# 	print()
-# 	print(pd.DataFrame(diff))
-# 	print()
-# 	print("MODEL PERFORMANCE")
-# 	print("EPOCHS: ", epochs)
-# 	print("LEARNING RATE: ", learn_rate)
-# 	print("NO. OF LAYERS: ", 1)
-# 	print("NEURONS PER LAYER: ", 16)
-# 	print("ACTIVATION: ", "sigmoid")
-# 	print("MEAN: ", np.mean(diff))
-# 	print("STD: ", np.std(diff))
+	# Generates datasets for prediction
+	for r0, r1, r2, r3, s1, p1 in product(*inputArray):
+		inputPars = {'r0': r0, 'r1': r1, 'r2': r2, 'r3': r3, 's1': s1, 'p1': p1}
+		outputData.append(inputPars)
 
-# 	plt.show()
+	# Convert to CSV
+	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predict-grid.csv"
+
+	df = pd.DataFrame(outputData)
+	df.to_csv(outputCSV)
+
+	print(outputData)
+
+def predict(model, X_pred):
+	
+	pred = pd.DataFrame(model.predict(X_pred))
+
+	return pred
+
+def eval_preds(model, X_test, y_test):
+
+	"""
+	Evaluates accuracy of predictions
+	"""
+
+	y_pred = pd.DataFrame(model.predict(X_test))
+
+	# Compare predictions with actual
+	diff = y_pred.to_numpy() - y_test.to_numpy()
+
+	print("NORMALISED y PREDICTIONS")
+	print()
+	print(y_pred)
+	print()
+	print("NORMALISED y ACTUAL")
+	print()
+	print(y_test)
+	print()
+	print("DIFFERENCE")
+	print()
+	print(pd.DataFrame(diff))
+	print()
+	print("MODEL PERFORMANCE")
+	print("EPOCHS: ", epochs)
+	print("LEARNING RATE: ", learn_rate)
+	print("NO. OF LAYERS: ", 1)
+	print("NEURONS PER LAYER: ", 16)
+	print("ACTIVATION: ", "sigmoid")
+	print("MEAN: ", np.mean(diff))
+	print("STD: ", np.std(diff))
+
+	plt.show()
 
 def main(): 
 
@@ -77,5 +111,5 @@ def main():
 	# print("STD: ", np.std(diff))
 
 if __name__ == "__main__":
-	main()
+	prediction_set()
 

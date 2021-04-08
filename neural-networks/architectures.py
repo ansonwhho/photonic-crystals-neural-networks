@@ -22,7 +22,8 @@ def seq_model(in_dim, out_dim, learn_rate, loss):
 	# and optimizer
 
 	model = keras.Sequential()
-	model.add(keras.layers.Dense(64, input_dim=in_dim, activation='sigmoid'))
+	model.add(keras.layers.Dense(16, input_dim=in_dim, activation='relu'))
+	model.add(keras.layers.Dense(16, input_dim=in_dim, activation='relu'))
 	# model.add(keras.layers.Dense(16, activation='sigmoid'))
 	model.add(keras.layers.Dense(out_dim))
 
@@ -35,6 +36,23 @@ def seq_model(in_dim, out_dim, learn_rate, loss):
 		)
 
 	return model
+
+def grid_search(vals, ):
+	"""
+	Grid search given array vals to find optimal hyperparameters
+	"""
+
+	learn_rates = [1e-6, 3e-6, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2]
+	optimisers = ['adam', 'SGD']
+	loss_function = ['mae', 'mse']
+	neurons = [8, 16, 32, 64, 128]
+	epochs = [10, 50, 100, 150, 200]
+	activation = ['sigmoid', 'relu', 'tanh']
+	weight_init = []
+	normalisation = []
+
+	return best_score, best_params
+
 
 # class seq_model(tf.keras.Sequential):
 
@@ -52,7 +70,3 @@ def seq_model(in_dim, out_dim, learn_rate, loss):
 
 # 	def call(self, inputs):
 
-
-# class func_model(tf.keras.Model):
-	
-	# Model using keras Functional API
