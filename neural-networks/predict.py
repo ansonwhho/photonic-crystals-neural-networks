@@ -7,10 +7,11 @@ Evaluates predictions
 
 import pandas as pd 
 import numpy as np
+from itertools import product
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
-from itertools import product
+
 
 def prediction_set():
 
@@ -20,7 +21,6 @@ def prediction_set():
 	"""
 
 	# initPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
-	
 
 	# round used to bypass floating point error
 	rRange = [round(x*0.1, 1) for x in range(1, 5+1, 1)] # radii from 0.1 to 0.5
@@ -53,38 +53,49 @@ def predict(model, X_pred):
 
 	return pred
 
-def eval_preds(model, X_test, y_test):
+def eval_preds(model, X_test, y_test, output_params):
 
 	"""
 	Evaluates accuracy of predictions
 	"""
 
-	y_pred = pd.DataFrame(model.predict(X_test))
+	# Target predictions
+	y_pred = pd.DataFrame(model.predict(X_test), columns=output_params)
 
-	# Compare predictions with actual
+	# Compare predictions with test values
 	diff = y_pred.to_numpy() - y_test.to_numpy()
+	diffDF = pd.DataFrame(diff)
+	percent = np.absolute(diff / y_pred.to_numpy()) * 100
+	percentDF = pd.DataFrame(percent)
 
-	print("NORMALISED y PREDICTIONS")
-	print()
-	print(y_pred)
-	print()
-	print("NORMALISED y ACTUAL")
-	print()
-	print(y_test)
-	print()
-	print("DIFFERENCE")
-	print()
-	print(pd.DataFrame(diff))
-	print()
 	print("MODEL PERFORMANCE")
-	print("EPOCHS: ", epochs)
-	print("LEARNING RATE: ", learn_rate)
-	print("NO. OF LAYERS: ", 1)
-	print("NEURONS PER LAYER: ", 16)
-	print("ACTIVATION: ", "sigmoid")
+	print("y PREDICTIONS")
+	print(y_pred)
+	print("NORMALISED y ACTUAL")
+	print(y_test)
+	print("DIFFERENCE")
+	print(diffDF)
+	print("PERCENTAGE DIFFERENCE")
+	print(percentDF)
+	print()
 	print("MEAN: ", np.mean(diff))
 	print("STD: ", np.std(diff))
 
+	# Visualise performance
+	plot_title = "Predictions vs actual"
+	x_label = "y predictions"
+	y_label = "y actual"
+
+	# bins = [0, 1, 3, 10, 30, 50, 100, 300, 1000]
+	# print(np.histogram(percentDF, bins=bins))
+	# percentDF.plot.hist(bins=bins)
+	# plt.xscale('log')	
+	# plt.show()
+
+	plt.scatter(y_pred, y_test)
+	plt.title(plot_title)
+	plt.xlabel(x_label)
+	plt.ylabel(y_label)
 	plt.show()
 
 def main(): 
@@ -102,13 +113,7 @@ def main():
 	h5_filepath = "/path/to/foo.h5"
 	model = keras.models.load_model(h5_filepath)
 
-	# norm_y_pred = pd.DataFrame(model.predict(norm_X_test), columns=output_params)
-
-	# # Compare predictions with actual
-	# diff = norm_y_pred.to_numpy() - norm_y_test.to_numpy()
-	# # print(pd.DataFrame(diff))
-	# print("MEAN: ", np.mean(diff))
-	# print("STD: ", np.std(diff))
+	# eval_preds()
 
 if __name__ == "__main__":
 	prediction_set()
