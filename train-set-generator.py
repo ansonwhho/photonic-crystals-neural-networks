@@ -4,7 +4,7 @@
 from backend.experiment import W1Experiment
 from backend import constraintsFix
 from backend import objectiveFunctions
-from random import uniform
+import random
 import pandas as pd
 import sys
 
@@ -33,16 +33,16 @@ def main():
         # randomise parameters with constraints
         # make copy of initPars
         randomPars = {param: value for param,value in initPars.items()}
-        randomPars['r0'] = 0.2 #uniform(0.2, 0.4)
-        randomPars['r1'] = 0.2 #uniform(0.2, 0.4)
+        randomPars['r0'] = uniform(0.2, 0.25)
+        randomPars['r1'] = uniform(0.2, 0.25) #uniform(0.2, 0.4)
         randomPars['r2'] = 0.2 #uniform(0.2, 0.4)
         randomPars['r3'] = 0.2 # uniform(0.2, 0.4)
-        randomPars['s1'] = 0 # uniform(-0.5, 0.5)
+        randomPars['s1'] = uniform(0.25, 0.5)
         randomPars['s2'] = 0 # uniform(-0.5, 0.5)
         randomPars['s3'] = 0 # uniform(-0.5, 0.5)
-        randomPars['p1'] = 0 # uniform(-0.5, 0.5)
-        randomPars['p2'] = 0 # uniform(-0.5, 0.5)
-        randomPars['p3'] = uniform(-0.5, 0.5)
+        randomPars['p1'] = 0 # uniform(-0.2, 0.2)
+        randomPars['p2'] = 0 # uniform(-0.2, 0.2)
+        randomPars['p3'] = 0 # uniform(-0.2, 0.2)
         #print("BEFORE", randomPars) # debug
         
         constrainPars = constraintsFix.fix(randomPars, constraintFunctions)
@@ -53,7 +53,8 @@ def main():
         experiment.setParams(constrainPars)
         experiment.setCalculationType(4) # fails with other calculation types
         experiment.setBand(23)
-        experiment.kinterp = 19
+        experiment.kinterp = 19
+
         experiment.dim3 = False # 2D
         experiment.split = "-split 15"
 

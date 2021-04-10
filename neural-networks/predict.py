@@ -11,13 +11,17 @@ from itertools import product
 import tensorflow as tf
 from tensorflow import keras
 import matplotlib.pyplot as plt
+import preprocessing
+import random
 
 
-def prediction_set():
+def generic_preds():
 
 	"""
 	Generates data for prediction systematically
-	throughout the input parameter space
+	throughout the input parameter space.
+	'Generic' since no specific FOM is being 
+	targeted (see specific_preds). 
 	"""
 
 	# initPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
@@ -47,11 +51,44 @@ def prediction_set():
 
 	print(outputData)
 
-def predict(model, X_pred):
-	
-	pred = pd.DataFrame(model.predict(X_pred))
+def specific_preds(num_pred_sets):
 
-	return pred
+	"""
+	Generates data for prediction randomly
+	within a certain range, to test a
+	particular FOM. Ranges are set based
+	on best values training data, or from
+	literature. 'Specific' because looks at
+	a specific FOM (see generic_preds).
+	"""
+
+	outputData = []
+
+	for i in range(num_pred_sets):
+		inputPars = {'r0': 0, 'r1': 0, 'r2': 0, 'r3': 0, 's1': 0, 's2': 0, 's3': 0, 'p1': 0, 'p2': 0, 'p3': 0}
+		inputPars['r0'] = random.uniform(0.2, 0.26)
+		inputPars['r1'] = random.uniform(0.35, 0.4)
+		inputPars['r2'] = random.uniform(0.22, 0.28) + random.randint(0, 1)
+		inputPars['r3'] = random.uniform(0.2, 0.4)
+		inputPars['s1'] = random.uniform(-0.2, 0.2)
+		inputPars['s2'] = random.uniform(-0.1, 0.1)
+		inputPars['s3'] = random.uniform(-0.1, 0.1)
+		inputPars['p1'] = random.uniform(-0.001, 0.001)
+		inputPars['p2'] = random.uniform(-0.001, 0.001)
+		inputPars['p3'] = random.uniform(-0.001, 0.001)
+
+		outputData.append(inputPars)
+
+	# Convert to CSV
+	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/GBP-pred-1.csv"
+
+	df = pd.DataFrame(outputData)
+	df.to_csv(outputCSV)
+
+def predict_save(model, X, output_params, outputCSV):
+
+	pred = pd.DataFrame(model.predict(X))
+	pred.to_csv(outputCSV)
 
 def eval_preds(model, X_test, y_test, output_params):
 
@@ -78,8 +115,8 @@ def eval_preds(model, X_test, y_test, output_params):
 	print("PERCENTAGE DIFFERENCE")
 	print(percentDF)
 	print()
-	print("MEAN: ", np.mean(diff))
-	print("STD: ", np.std(diff))
+	print("MEAN % DIFFERENCE: ", np.mean(percent))
+	print("STD % DIFFERENCE: ", np.std(percent))
 
 	# Visualise performance
 	plot_title = "Predictions vs actual"
@@ -92,7 +129,7 @@ def eval_preds(model, X_test, y_test, output_params):
 	# plt.xscale('log')	
 	# plt.show()
 
-	plt.scatter(y_pred, y_test)
+	plt.scatter(y_pred, y_test, s=10, marker="d", facecolors="none", edgecolors="red")
 	plt.title(plot_title)
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
@@ -116,5 +153,5 @@ def main():
 	# eval_preds()
 
 if __name__ == "__main__":
-	prediction_set()
+	specific_preds(10000)
 
