@@ -1,0 +1,47 @@
+########################################################
+### PROMISING DESIGN CANDIDATES FOR GBP OPTIMISATION ###
+### GAVE GBP > 0.4 IN 2D MPB SIMULATION 			 ###
+########################################################
+
+###################################
+### DESIGNS FROM NEURAL NETWORK ###
+###################################
+
+# DESIGN NO. 1
+FROM "random-pred-1.csv"
+ROW_NUM: (MPB STILL RUNNING, FIND OUT LATER)
+GBP (2D SIMULATION): 0.4631
+{'r0': 0.261165, 'r1': 0.24832350000000003, 'r2': 0.2198433636, 'r3': 0.363964, 's1': 0.302791, 's2': 0.47183759901298916, 's3': 0.471958, 'p1': 0.356098, 'p2': 0.8437525652239554, 'p3': -0.057296, 'bandwidth': 0.0453, 'ng0': 10.0721, 'avgLoss': 59.3357, 'GBP': 0.4631, 'loss_at_ng0': 76.4752, 'delay': 22.1076}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations
+RESULT: 
+
+# DESIGN NO. 2
+FROM "random-pred-1.csv"
+ROW_NUM: 
+GBP (2D SIMULATION): 0.5206
+{'r0': 0.281119, 'r1': 0.273181, 'r2': 0.330362, 'r3': 0.394709, 's1': 0.366452, 's2': 0.463987, 's3': 0.160205, 'p1': 0.413362, 'p2': 0.287497, 'p3': 0.101541, 'bandwidth': 0.0395, 'ng0': 13.2731, 'avgLoss': 359.4591, 'GBP': 0.5206, 'loss_at_ng0': 268.4376, 'delay': 10.2731}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations
+RESULT: 
+
+# DESIGN NO. 3
+FROM "random-pred-1.csv"
+ROW_NUM: 
+GBP (2D SIMULATION): 0.4631
+{'r0': 0.215161, 'r1': 0.339604, 'r2': 0.22776117840000004, 'r3': 0.389446, 's1': 0.275655, 's2': -4.808230802939531e-38, 's3': 0.462353, 'p1': 0.239588, 'p2': 2.795449337899935e-19, 'p3': 0.341139, 'bandwidth': 0.0407, 'ng0': 11.2863, 'avgLoss': 136.5041, 'GBP': 0.4581, 'loss_at_ng0': 160.5151, 'delay': 13.0545}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations
+RESULT: 
+
+####################################
+### DESIGNS FROM MPB SIMULATIONS ###
+####################################
+
+NOTE DIFFERENT ORDERING OF COLUMNS - PANDAS AUTOMATICALLY ORDERS THE
+COLUMNS WHEN CREATING A DATAFRAME, I WAS NOT AWARE OF THIS PREVIOUSLY.
+
+# DESIGN NO. 1
+FROM: "2021-04-10_set-15-GBP.csv"
+ROW_NUM: 6
+GBP (2D SIMULATION): 0.629
+{'r0': 0.306479, 'r1': 0.302173, 'r2': 0.226562, 'r3': 0.397348, 's1': 0.088808, 's2': 0.244831, 's3': 0.476608, 'p1': -0.438619, 'p2': -0.25025, 'p3': -0.209194, 'bandwidth': 0.043, 'ng0': 14.6025, 'avgLoss': 180.4464, 'GBP': 0.629, 'loss_at_ng0': 272.8351, 'delay': 11.7317}
+STATUS:  Optimised using 2D simulations by searching in nearby parts of design space (original point was GBP = 0.49)
+RESULT: 

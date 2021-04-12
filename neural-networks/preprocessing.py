@@ -23,6 +23,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
+import csv
+import itertools
 
 def removeInvalid(df, input_params, output_params):
 
@@ -169,11 +171,6 @@ def pipeline(dataFrame, input_params, output_params, normaliser, norm_settings):
 
 	return out_dfs
 
-def visual_data(dataFrame):
-
-	pd.plotting.scatter_matrix(dataFrame, diagonal='kde')
-	plt.show()
-
 def which_param(dataFrame):
 
 	"""
@@ -181,7 +178,8 @@ def which_param(dataFrame):
 	calculations, so that the neural network can 
 	be trained on a smaller sample space.
 
-	parameter: 'GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3'
+	parameters: 'GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 
+	'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3'
 
 	Look at values within certain thresholds
 
@@ -246,21 +244,73 @@ def which_param(dataFrame):
 	# print(df_good_in)
 	# print(df_bad_in)
 
+def analyse_preds(df, output_params):
+
+	"""
+	For exploratory data analysis.
+	Visualise data that optimises
+	a particular or several FOMs. 
+	"""
+
+	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 
+		'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
+	input_params = all_params[6:]
+
+	# Set thresholds
+	high = 0.9999
+	low = 0.001
+
+	GBP_good, GBP_bad = df["GBP"].quantile(high), df["GBP"].quantile(low)
+	# avgLoss_good, avgLoss_bad = df["avgLoss"].quantile(low), df["avgLoss"].quantile(high)
+	# bandwidth_good, bandwidth_bad = df["bandwidth"].quantile(high), df["bandwidth"].quantile(low)
+	# delay_good, delay_bad = df["delay"].quantile(high), df["delay"].quantile(low)
+	# loss_at_ng0_good, loss_at_ng0_bad = df["loss_at_ng0"].quantile(low), df["loss_at_ng0"].quantile(high)
+	# ng0_good, ng0_bad = df["ng0"].quantile(high), df["ng0"].quantile(low)
+
+	df_good = df[(df.GBP >= GBP_good) 
+	# & (df.avgLoss <= avgLoss_good) 
+	# & (df.bandwidth >= bandwidth_good)
+	# & (df.delay >= delay_good)
+	# & (df.loss_at_ng0 <= loss_at_ng0_good)
+	# & (df.ng0 >= ng0_good)
+	]
+
+	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_design-candidates-GBP.csv"
 	
+
+def csv_row(CSV_file, row_num):
+
+	"""
+	Finds the elements given a CSV file and row
+	Use for large datasets where Excel cannot
+	manage the size
+	"""
+
+	with open(CSV_file, 'r') as file:
+		print(next(itertools.islice(csv.reader(file), row_num, None)))
 
 def main():
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-07_combined-set.csv"
+	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-11_combined-set.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_random-pred-1-PREDICTIONS.csv"
+	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/predict-sets/random-pred-1.csv"
+
+	# csv_row(inputCSV, 944038)
+
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 
 		'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
 	
 	# Load data
 	input_params = all_params[6:]
 	# output_params = all_params[:6]
-	output_params = [all_params[2]]
-	df = pd.read_csv(inputCSV, names=all_params)
+	output_params = [all_params[0]]
+	df = pd.read_csv(inputCSV, index_col=0)
 
-	which_param(df)	
+	# # df_norm, col_mean_SD = zScoreNorm(df)
+
+	analyse_preds(df, output_params)
+
+	# which_param(df)	
 
 	# df_norm, col_mean_SD = zScoreNorm(df)
 	# df_denorm = zScoreDenorm(df_norm, col_mean_SD)
@@ -289,6 +339,9 @@ def main():
 	# print(X_test)
 	# print(y_train)
 	# print(y_test)
+
+	# pd.plotting.scatter_matrix(dataFrame, diagonal='kde')
+	# plt.show()
 
 if __name__ == "__main__":
 	main()

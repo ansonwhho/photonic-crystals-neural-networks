@@ -57,7 +57,7 @@ def main():
 
 	# PREPROCESSING
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-07_combined-set.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-11_combined-set.csv"
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
 	normaliser = "z-score"
 	norm_settings = "inout"
@@ -65,7 +65,7 @@ def main():
 	# Load data
 	input_params = all_params[6:]
 	# output_params = all_params[:6]
-	output_params = [all_params[1]]
+	output_params = [all_params[0]]
 	df = pd.read_csv(inputCSV, names=all_params)
 	
 	# Normalise input and output
@@ -75,24 +75,29 @@ def main():
 	y_train, y_train_vals = dataFrames[2]
 	y_test, y_test_vals = dataFrames[3]
 
+	# X_train, X_train_vals = dataFrames[0]
+	# X_test, X_test_vals = dataFrames[1]
+	# y_train = dataFrames[2]
+	# y_test = dataFrames[3]
+
 	# BUILD MODEL
 	# Set model and training hyperparameters
 	# (see grid_search in architectures.py for more details)
 	# Architecture
 	in_dim = len(input_params)
 	out_dim = len(output_params)
-	layers = 2
-	neurons = 16
+	layers = 4
+	neurons = 128
 
 	# Training
 	learn_rate = 1e-2
 	loss = 'mse'
-	epochs = 300
+	epochs = 100
 	val_split = 0.1
 	patience = 50 # use high patience if avgLoss
 
 	model = architectures.get_model(in_dim, out_dim, learn_rate, loss, layers, neurons)
-	early_stop = keras.callbacks.EarlyStopping(monitor='loss', patience=patience)
+	early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=patience)
 	
 	history = model.fit(
 		X_train, y_train,
@@ -117,9 +122,9 @@ def main():
 	predict.eval_preds(model, X_test, y_test, output_params)
 
 	# # SAVE MODEL
-	# date = 2021-03-28 # YYYY-MM-DD
-	# version = 1
-	# fileName = "train_{}_v{}.h5".format(date, version)
+	# date = "2021-04-11" # YYYY-MM-DD
+	# version = "2"
+	# fileName = "/Users/apple/desktop/photonic-crystals-neural-networks/models/train_{}_v{}.h5".format(date, version)
 	# model.save(fileName)
 
 if __name__ == "__main__":
