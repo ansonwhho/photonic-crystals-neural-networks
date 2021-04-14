@@ -4,7 +4,7 @@ Anson Ho, 2021
 Preprocesses data to be used for training of the neural network
 
 Figures of merit (FOMs) i.e. output parameters: 
-- Gain-bandwidth product (GBP)
+- Group-index bandwidth product (GBP)
 - Average loss (avgLoss)
 - Bandwidth
 - Delay
@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import csv
 import itertools
+import re
 
 def removeInvalid(df, input_params, output_params):
 
@@ -32,9 +33,31 @@ def removeInvalid(df, input_params, output_params):
 	Removes experiments with invalid
 	group index from dataframe
 	i.e. remove data when GBP auto set to zero
+
+	(Update 2021-04-12): Found bug in constraintsFix.py
+	A lot of the previous training data is not
+	physically viable. The hallmark of these 
+	is that the input params have > 6 s.f. and
+	hence will be written in scientific notation.
+	Thus remove these values
+	Potentially reduces the accuracy of trained
+	networks significantly
 	"""
 
+	# Fix values that gave too many recursions
+	for col in df.columns:
+		num_str = str(df[col])
+
+		# Reject if in scientific notation
+		if num_str[0] != "0": 
+			if ((num_str[0] != "-") or (num_str[1] != "0")):
+				df.GBP = 0.0000
+
+	# Remove data with invalid GBP or 
 	df_new = df[df.GBP != 0.0000]
+
+	# print(df_new)
+
 
 	X = df_new[input_params] # Features
 	y = df_new[output_params] # Targets
@@ -257,7 +280,7 @@ def analyse_preds(df, output_params):
 	input_params = all_params[6:]
 
 	# Set thresholds
-	high = 0.9999
+	high = 0.99
 	low = 0.001
 
 	GBP_good, GBP_bad = df["GBP"].quantile(high), df["GBP"].quantile(low)
@@ -275,7 +298,9 @@ def analyse_preds(df, output_params):
 	# & (df.ng0 >= ng0_good)
 	]
 
-	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_design-candidates-GBP.csv"
+	print(df_good)
+
+	# outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/designs/candidates/2021-04-11_candidate-set-2-TEST.csv"
 	
 
 def csv_row(CSV_file, row_num):
@@ -291,9 +316,10 @@ def csv_row(CSV_file, row_num):
 
 def main():
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
-	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-11_combined-set.csv"
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_random-pred-1-PREDICTIONS.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-13_combined-set.csv"
+	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_random-pred-1-PREDICTIONS.csv"
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/predict-sets/random-pred-1.csv"
+	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/designs/candidates/2021-04-11_candidate-set-2-TEST.csv"
 
 	# csv_row(inputCSV, 944038)
 
@@ -304,11 +330,13 @@ def main():
 	input_params = all_params[6:]
 	# output_params = all_params[:6]
 	output_params = [all_params[0]]
-	df = pd.read_csv(inputCSV, index_col=0)
+	df = pd.read_csv(inputCSV, names=all_params)
+	print(df)
 
 	# # df_norm, col_mean_SD = zScoreNorm(df)
 
-	analyse_preds(df, output_params)
+	removeInvalid(df, input_params, output_params)
+	# analyse_preds(df, output_params)
 
 	# which_param(df)	
 

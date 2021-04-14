@@ -158,11 +158,11 @@ def main():
 	# print(df)
 
 	# Load model
-	h5_filepath = "/Users/apple/desktop/photonic-crystals-neural-networks/models/train_2021-04-11_v2.h5"
+	h5_filepath = "/Users/apple/desktop/photonic-crystals-neural-networks/models/train_2021-04-13_v1.h5"
 	model = keras.models.load_model(h5_filepath)
 
 	# Make predictions
-	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/2021-04-11_v2_random-pred-2-PREDICTIONS.csv"
+	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/2021-04-13_v1_random-pred-2-PREDICTIONS.csv"
 	# predict_save(model, df, output_params, outputCSV)
 	df_norm, col_mean_SD = preprocessing.zScoreNorm(df)
 	pred = pd.DataFrame(model.predict(df_norm), columns=output_params)

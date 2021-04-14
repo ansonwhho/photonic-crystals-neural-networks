@@ -1,0 +1,39 @@
+########################################################
+### PROMISING DESIGN CANDIDATES FOR GBP OPTIMISATION ###
+### TO TEST IN 3D SIMULATIONS						 ###
+########################################################
+
+###################################
+### DESIGNS FROM NEURAL NETWORK ###
+###################################
+
+# DESIGN NO. 1
+FROM:
+ROW_NUM: 
+GBP (2D SIMULATION): 0.5686
+{'r0': 0.285024, 'r1': 0.272206, 'r2': 0.331699, 'r3': 0.3928, 's1': 0.362797, 's2': 0.463676, 's3': 0.158644, 'p1': 0.414781, 'p2': 0.289536, 'p3': 0.101207, 'bandwidth': 0.043, 'ng0': 13.1771, 'avgLoss': 364.4575, 'GBP': 0.5686, 'loss_at_ng0': 618.0132, 'delay': 4.4104}
+STATUS: Optimised w/ 2D sim. To test on 3D simulations
+RESULT: 
+
+# DESIGN NO. 2
+FROM:
+ROW_NUM: 
+GBP (2D SIMULATION): 0.4951
+{'r0': 0.31952, 'r1': 0.257064, 'r2': 0.227576, 'r3': 0.345699, 's1': 0.236715, 's2': 0.202879, 's3': 0.414764, 'p1': -0.303236, 'p2': -0.18023, 'p3': -0.207141, 'bandwidth': 0.0486, 'ng0': 10.0927, 'avgLoss': 49.6981, 'GBP': 0.4951, 'loss_at_ng0': 102.1169, 'delay': 16.6237}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations. Can test using 3D sim
+RESULT: 
+
+####################################
+### DESIGNS FROM MPB SIMULATIONS ###
+####################################
+
+NOTE DIFFERENT ORDERING OF COLUMNS - PANDAS AUTOMATICALLY ORDERS THE
+COLUMNS WHEN CREATING A DATAFRAME, I WAS NOT AWARE OF THIS PREVIOUSLY.
+
+# DESIGN NO. 1
+FROM: "2021-04-10_set-15-GBP.csv"
+ROW_NUM: 6
+GBP (2D SIMULATION): 0.629
+{'r0': 0.306479, 'r1': 0.302173, 'r2': 0.226562, 'r3': 0.397348, 's1': 0.088808, 's2': 0.244831, 's3': 0.476608, 'p1': -0.438619, 'p2': -0.25025, 'p3': -0.209194, 'bandwidth': 0.043, 'ng0': 14.6025, 'avgLoss': 180.4464, 'GBP': 0.629, 'loss_at_ng0': 272.8351, 'delay': 11.7317}
+STATUS:  Optimised using 2D simulations by searching in nearby parts of design space (original point was GBP = 0.49)
+RESULT: 

@@ -12,23 +12,50 @@ FROM "random-pred-1.csv"
 ROW_NUM: (MPB STILL RUNNING, FIND OUT LATER)
 GBP (2D SIMULATION): 0.4631
 {'r0': 0.261165, 'r1': 0.24832350000000003, 'r2': 0.2198433636, 'r3': 0.363964, 's1': 0.302791, 's2': 0.47183759901298916, 's3': 0.471958, 'p1': 0.356098, 'p2': 0.8437525652239554, 'p3': -0.057296, 'bandwidth': 0.0453, 'ng0': 10.0721, 'avgLoss': 59.3357, 'GBP': 0.4631, 'loss_at_ng0': 76.4752, 'delay': 22.1076}
-STATUS: Need to optimise using 2D simulations and test using 3D simulations
-RESULT: 
+STATUS: 2D sims suggest maybe a sharp peak - small region of high GBP. Prioritise other designs
+RESULT: Not so great
 
-# DESIGN NO. 2
+# DESIGN NO. 2 ### TEST ON 3D SIMULATIONS ###
 FROM "random-pred-1.csv"
 ROW_NUM: 
-GBP (2D SIMULATION): 0.5206
-{'r0': 0.281119, 'r1': 0.273181, 'r2': 0.330362, 'r3': 0.394709, 's1': 0.366452, 's2': 0.463987, 's3': 0.160205, 'p1': 0.413362, 'p2': 0.287497, 'p3': 0.101541, 'bandwidth': 0.0395, 'ng0': 13.2731, 'avgLoss': 359.4591, 'GBP': 0.5206, 'loss_at_ng0': 268.4376, 'delay': 10.2731}
-STATUS: Need to optimise using 2D simulations and test using 3D simulations
+GBP (2D SIMULATION): 0.5206 (updated: 0.5686)
+### OLD PARAMS ### {'r0': 0.281119, 'r1': 0.273181, 'r2': 0.330362, 'r3': 0.394709, 's1': 0.366452, 's2': 0.463987, 's3': 0.160205, 'p1': 0.413362, 'p2': 0.287497, 'p3': 0.101541, 'bandwidth': 0.0395, 'ng0': 13.2731, 'avgLoss': 359.4591, 'GBP': 0.5206, 'loss_at_ng0': 268.4376, 'delay': 10.2731}
+### NEW PARAMS ### {'r0': 0.285024, 'r1': 0.272206, 'r2': 0.331699, 'r3': 0.3928, 's1': 0.362797, 's2': 0.463676, 's3': 0.158644, 'p1': 0.414781, 'p2': 0.289536, 'p3': 0.101207, 'bandwidth': 0.043, 'ng0': 13.1771, 'avgLoss': 364.4575, 'GBP': 0.5686, 'loss_at_ng0': 618.0132, 'delay': 4.4104}
+STATUS: Optimised w/ 2D sim. To test on 3D simulations
 RESULT: 
 
 # DESIGN NO. 3
 FROM "random-pred-1.csv"
 ROW_NUM: 
-GBP (2D SIMULATION): 0.4631
-{'r0': 0.215161, 'r1': 0.339604, 'r2': 0.22776117840000004, 'r3': 0.389446, 's1': 0.275655, 's2': -4.808230802939531e-38, 's3': 0.462353, 'p1': 0.239588, 'p2': 2.795449337899935e-19, 'p3': 0.341139, 'bandwidth': 0.0407, 'ng0': 11.2863, 'avgLoss': 136.5041, 'GBP': 0.4581, 'loss_at_ng0': 160.5151, 'delay': 13.0545}
-STATUS: Need to optimise using 2D simulations and test using 3D simulations
+GBP (2D SIMULATION): 0.4581 (updated: 0.509)
+### OLD PARAMS ### {'r0': 0.215161, 'r1': 0.339604, 'r2': 0.22776117840000004, 'r3': 0.389446, 's1': 0.275655, 's2': -4.808230802939531e-38, 's3': 0.462353, 'p1': 0.239588, 'p2': 2.795449337899935e-19, 'p3': 0.341139, 'bandwidth': 0.0407, 'ng0': 11.2863, 'avgLoss': 136.5041, 'GBP': 0.4581, 'loss_at_ng0': 160.5151, 'delay': 13.0545}
+### NEW PARAMS ### {'r0': 0.216665, 'r1': 0.337332, 'r2': 0.226239, 'r3': 0.388947, 's1': 0.276652, 's2': -1.2758945445882445e-40, 's3': 0.461593, 'p1': 0.240135, 'p2': 2.279613280305507e-22, 'p3': 0.342317, 'bandwidth': 0.0454, 'ng0': 11.2921, 'avgLoss': 167.3359, 'GBP': 0.509, 'loss_at_ng0': 239.9774, 'delay': 8.7398}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations. Potentially not too stable, but promising. Seems to give large GBP when "TOO MANY RECURSION" - bad sign. Prioritise other designs
+RESULT: So-so
+
+# DESIGN NO. 4
+FROM "random-pred-1.csv"
+ROW_NUM: 
+GBP (2D SIMULATION): 0.4426
+{'r0': 0.279207, 'r1': 0.393677, 'r2': 0.21864840867, 'r3': 0.370163, 's1': 0.295707, 's2': -1.6708970729352271e-37, 's3': 0.441978, 'p1': 0.198358, 'p2': 8.434697714943543e-19, 'p3': 0.465473, 'bandwidth': 0.0296, 'ng0': 15.2146, 'avgLoss': 408.1203, 'GBP': 0.4426, 'loss_at_ng0': 521.8846, 'delay': 6.5242}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations. Similar to previous - works well when "TOO MANY RECURSIONS" - potentially due to how the params are rescaled when recursions is too high. Prioritise other designs
+RESULT: 
+
+# DESIGN NO. 5 ### TEST ON 3D SIMULATIONS ###
+FROM "random-pred-1.csv"
+ROW_NUM: 
+GBP (2D SIMULATION): 0.4934 (updated 0.4951)
+{'r0': 0.323674, 'r1': 0.261013, 'r2': 0.230964, 'r3': 0.344713, 's1': 0.235619, 's2': 0.204174, 's3': 0.411769, 'p1': -0.304278, 'p2': -0.181843, 'p3': -0.208922, 'bandwidth': 0.0487, 'ng0': 10.1352, 'avgLoss': 50.9273, 'GBP': 0.4934, 'loss_at_ng0': 105.8616, 'delay': 16.1697}
+{'r0': 0.31952, 'r1': 0.257064, 'r2': 0.227576, 'r3': 0.345699, 's1': 0.236715, 's2': 0.202879, 's3': 0.414764, 'p1': -0.303236, 'p2': -0.18023, 'p3': -0.207141, 'bandwidth': 0.0486, 'ng0': 10.0927, 'avgLoss': 49.6981, 'GBP': 0.4951, 'loss_at_ng0': 102.1169, 'delay': 16.6237}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations. Can test using 3D sim
+RESULT: 
+
+# DESIGN NO. 6
+FROM "random-pred-1.csv"
+ROW_NUM: 
+GBP (2D SIMULATION): 0.4119
+{'r0': 0.2823, 'r1': 0.351693, 'r2': 0.212528286, 'r3': 0.359556, 's1': 0.311184, 's2': -1.40E-37, 's3': 0.449986, 'p1': 0.144953, 'p2': 2.86E-19, 'p3': 0.437368, 'bandwidth': 0.0316, 'ng0': 13.3949, 'avgLoss': 251.1275, 'GBP': 0.4119, 'loss_at_ng0': 420.9456, 'delay': 6.6477}
+STATUS: Need to optimise using 2D simulations and test using 3D simulations. "TOO MANY RECURSIONS" implies false positives?
 RESULT: 
 
 ####################################
@@ -38,7 +65,7 @@ RESULT:
 NOTE DIFFERENT ORDERING OF COLUMNS - PANDAS AUTOMATICALLY ORDERS THE
 COLUMNS WHEN CREATING A DATAFRAME, I WAS NOT AWARE OF THIS PREVIOUSLY.
 
-# DESIGN NO. 1
+# DESIGN NO. 1 ### TEST ON 3D SIMULATIONS ###
 FROM: "2021-04-10_set-15-GBP.csv"
 ROW_NUM: 6
 GBP (2D SIMULATION): 0.629

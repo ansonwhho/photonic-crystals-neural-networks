@@ -42,7 +42,8 @@ def get_model(in_dim=10, out_dim=1, learn_rate=1e-3, loss='mse', layers=2, neuro
 def grid_search(X, y, cv=5):
 	"""
 	Grid search given features and targets to find 
-	optimal hyperparameters. Focusses on 
+	optimal hyperparameters. Really, really slow - 
+	consider using some other kind of optimisation.
 
 	Can also search through fancier things in this
 	systematic fashion, e.g. normalisation, optimisers,
@@ -65,7 +66,7 @@ def grid_search(X, y, cv=5):
 	loss = ['mae', 'mse']
 	neurons = [8, 16, 32, 64, 128]
 	layers = [1, 2, 3, 4] # Hidden layers
-	epochs = [50, 100, 300, 1000, 2000]
+	# epochs = [50, 100, 300, 1000, 2000]
 	# normalisation = ['min-max', 'z-score']
 
 	# param_grid = {
@@ -77,7 +78,7 @@ def grid_search(X, y, cv=5):
 	# 	# 'normalisation': normalisation
 	# 	}
 
-	param_grid = dict(learn_rate=learn_rates, loss=loss, neurons=neurons, layers=layers, epochs=epochs)
+	param_grid = dict(learn_rate=learn_rates, loss=loss, neurons=neurons, layers=layers)
 
 	grid = GridSearchCV(
 		estimator=model,
@@ -95,7 +96,7 @@ def grid_search(X, y, cv=5):
 	# optimisers = ['adam', 'SGD']
 	# activation = ['sigmoid', 'relu', 'tanh']
 
-	print("Best: {} using {}".format(fit_model.best_score_, fit_model.best_params_))
+	print("Best hyperparameters: {} using {}".format(fit_model.best_score_, fit_model.best_params_))
 	means = fit_model.cv_results_['mean_test_score']
 	stds = fit_model.cv_results_['std_test_score']
 	params = fit_model.cv_results_['params']

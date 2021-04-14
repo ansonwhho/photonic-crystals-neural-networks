@@ -57,7 +57,7 @@ def main():
 
 	# PREPROCESSING
 	# inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/run-sets/vary-one-param/2021-03-24_p3_set-1-edit.csv"
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-11_combined-set.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/training-sets/combined-sets/2021-04-13_combined-set.csv"
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
 	normaliser = "z-score"
 	norm_settings = "inout"
@@ -90,11 +90,11 @@ def main():
 	neurons = 128
 
 	# Training
-	learn_rate = 1e-2
-	loss = 'mse'
-	epochs = 100
+	learn_rate = 2e-1
+	loss = 'mae'
+	epochs = 300
 	val_split = 0.1
-	patience = 50 # use high patience if avgLoss
+	patience = 25 # use high patience if avgLoss
 
 	model = architectures.get_model(in_dim, out_dim, learn_rate, loss, layers, neurons)
 	early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=patience)
@@ -122,8 +122,8 @@ def main():
 	predict.eval_preds(model, X_test, y_test, output_params)
 
 	# # SAVE MODEL
-	# date = "2021-04-11" # YYYY-MM-DD
-	# version = "2"
+	# date = "2021-04-13" # YYYY-MM-DD
+	# version = "1"
 	# fileName = "/Users/apple/desktop/photonic-crystals-neural-networks/models/train_{}_v{}.h5".format(date, version)
 	# model.save(fileName)
 

@@ -52,8 +52,8 @@ def candidate_designs(input_df, pred_df, opt_param, high, low, outputCSV):
 	candidate_df = input_df.iloc[indexes,:]
 
 	# Save outputs for testing with MPB
-	# candidate_df.to_csv(outputCSV)
-	print(candidate_preds)
+	candidate_df.to_csv(outputCSV)
+	# print(candidate_preds)
 
 # def test_candidates(candidate_df):
 
@@ -172,8 +172,8 @@ def csv_row(CSV_file, row_num):
 		print(next(itertools.islice(csv.reader(file), row_num, None)))
 
 def main():
-	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/predict-sets/random-pred-1.csv" 
-	predCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-11_v2_random-pred-1-PREDICTIONS.csv"
+	inputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/predict-sets/random-pred-2.csv" 
+	predCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/predictions/2021-04-13_v1_random-pred-2-PREDICTIONS.csv"
 	
 	all_params = ['GBP', 'avgLoss', 'bandwidth', 'delay', 'loss_at_ng0', 'ng0', 
 		'p1', 'p2', 'p3', 'r0', 'r1', 'r2', 'r3', 's1', 's2', 's3']
@@ -187,7 +187,7 @@ def main():
 	high = 0.99999
 	low = 0.001
 	opt_param = 'GBP'
-	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/designs/candidates/2021-04-11_candidate-set-2.csv"
+	outputCSV = "/Users/apple/desktop/photonic-crystals-neural-networks/models/designs/candidates/2021-04-13_candidate-set-1.csv"
 	candidate_designs(input_df, pred_df, opt_param, high, low, outputCSV)
 
 	# csv_row(inputCSV, 944038)
